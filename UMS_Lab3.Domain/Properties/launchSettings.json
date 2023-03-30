@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "UMS_Lab3.Domain": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:50062;http://localhost:50063"
+    }
+  }
+}
