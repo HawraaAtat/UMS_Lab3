@@ -1,5 +1,7 @@
 using CourseService.Application.Abstraction;
+using CourseService.Domain.Models;
 using CourseService.Persistence;
+using CourseService.Persistence.Models;
 
 namespace CourseService.Application.Service;
 
@@ -33,9 +35,29 @@ public class RepositoryHelper<TEntity> : IRepository<TEntity> where TEntity : cl
             throw new Exception("Couldn't retrieve entities");
         }
     }
-    public async Task<string> AddAsync(TEntity entity)
+    //public async Task<string> AddAsync(TEntity entity)
+    //{
+
+    //    if (entity == null)
+    //    {
+    //        throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
+    //    }
+
+    //    try
+    //    {
+    //        await _dbContext.AddAsync(entity);
+    //        await _dbContext.SaveChangesAsync();
+
+    //        return "Added Successfully";
+    //    }
+    //    catch (Exception)
+    //    {
+    //        throw new Exception($"{nameof(entity)} could not be saved");
+    //    }
+    //}
+
+    public async Task<string> AddAsync(TEntity entity, long tenantId)
     {
-        
         if (entity == null)
         {
             throw new ArgumentNullException($"{nameof(AddAsync)} entity must not be null");
@@ -43,6 +65,13 @@ public class RepositoryHelper<TEntity> : IRepository<TEntity> where TEntity : cl
 
         try
         {
+            // Set the tenant id
+            var course = entity as Course;
+            if (course != null)
+            {
+                course.TenantId = tenantId;
+            }
+
             await _dbContext.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
@@ -53,6 +82,8 @@ public class RepositoryHelper<TEntity> : IRepository<TEntity> where TEntity : cl
             throw new Exception($"{nameof(entity)} could not be saved");
         }
     }
+
+
 
     public async Task<string> UpdateAsync(TEntity entity)
     {

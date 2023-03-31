@@ -7,6 +7,8 @@ using CourseService.DTO;
 using CourseService.Application.Queries;
 using CourseService.Application.Commands;
 using CourseService.Domain.Models;
+using System.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseService.Controllers;
 
@@ -49,21 +51,41 @@ public class CourseController: ControllerBase
     }
 
 
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    ////[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[HttpPost("AddCourse")]
+    //public async Task<IActionResult> Add([FromBody] CreateCourseDTO c)
+    //{
+    //    //TODO: Use AutoMapper for mappings
+    //    Course course = _mapper.Map<Course>(c);
+
+    //    var result = await _mediator.Send(new CreateCourseCommand
+    //    {
+    //        course= course
+    //    });
+
+    //    return Ok(result);
+    //}
+
     [HttpPost("AddCourse")]
     public async Task<IActionResult> Add([FromBody] CreateCourseDTO c)
     {
         //TODO: Use AutoMapper for mappings
         Course course = _mapper.Map<Course>(c);
 
+        // Get the tenant id from the request headers or somewhere else
+        int tenantId = 1; // Replace with the actual tenant id
+
+
         var result = await _mediator.Send(new CreateCourseCommand
         {
-            course= course
-        });
+            course = course,
+            tenantId = tenantId
+        }) ;
 
         return Ok(result);
     }
-    
+
+
     [HttpPut("update")]
     public async Task<IActionResult> Update([FromBody] UpdateCourseDTO c)
     {

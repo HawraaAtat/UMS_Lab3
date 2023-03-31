@@ -4,7 +4,7 @@ using CourseService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CourseService.Persistence
+namespace CourseService.Persistence.Models
 {
     public partial class classContext : DbContext
     {
@@ -18,6 +18,7 @@ namespace CourseService.Persistence
         }
 
         public virtual DbSet<Course> Courses { get; set; } = null!;
+        public virtual DbSet<Tenant> Tenants { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,9 +36,26 @@ namespace CourseService.Persistence
                 entity.HasIndex(e => e.Name, "courses_\"name\"_uindex")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Id, "courses_id_uindex")
-                    .IsUnique();
+                entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Courses_Id_seq1\"'::regclass)");
+
+                entity.HasOne(d => d.Tenant)
+                    .WithMany(p => p.Courses)
+                    .HasForeignKey(d => d.TenantId)
+                    .HasConstraintName("courses_tenant_id_fk");
             });
+
+            modelBuilder.Entity<Tenant>(entity =>
+            {
+                entity.ToTable("Tenant");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("timestamp without time zone")
+                    .HasDefaultValueSql("now()");
+            });
+
+            modelBuilder.HasSequence("Class_CourseId_seq");
+
+            modelBuilder.HasSequence("ClassEnrollment_Id_seq");
 
             modelBuilder.HasSequence("Courses_Id_seq");
 

@@ -12,6 +12,7 @@ using CourseService.Application.Service;
 using CourseService.Persistence;
 using UMS_Lab3.Infrastructure.Abstraction.EmailServiceAbstraction;
 using UMS_Lab3.Infrastructure.EmailService;
+using CourseService.Persistence.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
