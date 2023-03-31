@@ -30,8 +30,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
 
-		<!--<PackageReference Include="MassTransit" Version="8.0.2" />
-		<PackageReference Include="MassTransit.RabbitMQ" Version="8.0.2" />-->
+		<PackageReference Include="MassTransit" Version="8.0.2" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.0.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\TeacherService.Application\TeacherService.Application.csproj" />

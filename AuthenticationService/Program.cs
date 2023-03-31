@@ -16,6 +16,7 @@ using System.Reflection;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using MassTransit;
+//using MassTransit;
 
 static IEdmModel GetEdmModel()
 {
@@ -51,18 +52,18 @@ builder.Services.AddDbContext<authContext>(options =>
 
 
 //for rabbitmq
-//builder.Services.AddMassTransit(x =>
-//{
-//    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-//    {
-//        config.Host(new Uri("rabbitmq://localhost"), h =>
-//        {
-//            h.Username("guest");
-//            h.Password("guest");
-//        }
-//        );
-//    }));
-//});
+builder.Services.AddMassTransit(x =>
+{
+    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+    {
+        config.Host(new Uri("rabbitmq://localhost"), h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        }
+        );
+    }));
+});
 
 builder.Services.AddMassTransitHostedService();
 builder.Services.AddControllers();

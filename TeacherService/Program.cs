@@ -39,24 +39,24 @@ builder.Services.AddDbContext<teacherContext>(options =>
 
 
 //for rabbitmq
-//builder.Services.AddMassTransit(x =>
-//{
-//    x.AddConsumer<UserCreatedConsumer>();
-//    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-//    {
-//        config.Host(new Uri("rabbitmq://localhost"), h =>
-//        {
-//            h.Username("guest");
-//            h.Password("guest");
-//        });
-//        config.ReceiveEndpoint("user", ep =>
-//        {
-//            ep.PrefetchCount = 16;
-//            ep.UseMessageRetry(r => r.Interval(2, 100));
-//            ep.ConfigureConsumer<UserCreatedConsumer>(provider);
-//        });
-//    }));
-//});
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedConsumer>();
+    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+    {
+        config.Host(new Uri("rabbitmq://localhost"), h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        config.ReceiveEndpoint("user", ep =>
+        {
+            ep.PrefetchCount = 16;
+            ep.UseMessageRetry(r => r.Interval(2, 100));
+            ep.ConfigureConsumer<UserCreatedConsumer>(provider);
+        });
+    }));
+});
 
 builder.Services.AddMassTransitHostedService();
 builder.Services.AddControllers();

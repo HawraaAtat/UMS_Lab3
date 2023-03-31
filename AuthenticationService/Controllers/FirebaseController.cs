@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -93,20 +95,6 @@ namespace AuthenticationService.Controllers
 
                 var user = new User { Name = userDTO.Name, Email = userDTO.Email, KeycloakId = Guid.NewGuid().ToString() };
 
-                //if (user != null)
-                //{
-                //    Uri uri = new Uri("rabbitmq://localhost/user");
-                //    var endPoint = await _bus.GetSendEndpoint(uri);
-                //    await endPoint.Send(user);
-
-                //}
-                //else {
-
-                //    return BadRequest();
-                //}
-
-                //var user = _mapper.Map<User>(userDTO);
-
                 var role = await _authContext.Roles.FirstOrDefaultAsync(r => r.Name == userDTO.RoleName);
                 if (role == null)
                 {
@@ -115,6 +103,53 @@ namespace AuthenticationService.Controllers
                 user.Role = role;
                 _authContext.Users.Add(user);
                 await _authContext.SaveChangesAsync();
+
+                //var user = _mapper.Map<User>(userDTO);
+
+                //try
+                //{
+                //    Uri uri = new Uri("rabbitmq://localhost/user");
+                //    var endPoint = await _bus.GetSendEndpoint(uri);
+                //    //var serializedUser = JsonConvert.SerializeObject(user);
+
+                //    var serializedUser = JsonConvert.SerializeObject(user);
+                //    byte[] bytes = Encoding.UTF8.GetBytes(serializedUser);
+
+                //    await endPoint.Send(bytes);
+
+                //}
+                //catch (Exception ex) 
+                //{
+                //    return BadRequest(ex);
+                //}
+
+
+                try
+                {
+                    var factory = new ConnectionFactory() { HostName = "localhost" };
+                    using (var connection = factory.CreateConnection())
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(queue: "user",
+                                             durable: false,
+                                             exclusive: false,
+                                             autoDelete: false,
+                                             arguments: null);
+
+                        var serializedUser = JsonConvert.SerializeObject(user);
+                        var body = Encoding.UTF8.GetBytes(serializedUser);
+
+                        channel.BasicPublish(exchange: "",
+                                             routingKey: "user",
+                                             basicProperties: null,
+                                             body: body);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex);
+                }
+
 
                 //log in the new user
                 var fbAuthLink = await _auth.SignInWithEmailAndPasswordAsync(userDTO.Email, userDTO.Password);

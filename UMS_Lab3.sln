@@ -70,6 +70,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{0B48E05B-1390-408F-9BBE-CA08F963D761}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7EB4D537-82B2-43DF-8D7B-285734EAF2E1}"
+	ProjectSection(SolutionItems) = preProject
+		TeacherService.Application\Service\UserCreatedConsumer.cs = TeacherService.Application\Service\UserCreatedConsumer.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{AD73F93E-17CA-4A19-B0C8-AEDACFB1D163}"
 EndProject
