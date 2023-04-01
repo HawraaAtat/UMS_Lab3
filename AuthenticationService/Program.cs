@@ -16,6 +16,7 @@ using System.Reflection;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using MassTransit;
+using AuthenticationService;
 //using MassTransit;
 
 static IEdmModel GetEdmModel()
@@ -31,6 +32,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+        //.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter()));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

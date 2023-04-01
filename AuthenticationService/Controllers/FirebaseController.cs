@@ -106,49 +106,54 @@ namespace AuthenticationService.Controllers
 
                 //var user = _mapper.Map<User>(userDTO);
 
-                //try
-                //{
-                //    Uri uri = new Uri("rabbitmq://localhost/user");
-                //    var endPoint = await _bus.GetSendEndpoint(uri);
-                //    //var serializedUser = JsonConvert.SerializeObject(user);
-
-                //    var serializedUser = JsonConvert.SerializeObject(user);
-                //    byte[] bytes = Encoding.UTF8.GetBytes(serializedUser);
-
-                //    await endPoint.Send(bytes);
-
-                //}
-                //catch (Exception ex) 
-                //{
-                //    return BadRequest(ex);
-                //}
-
+                var userDto = new UserDTO
+                {
+                    Name= userDTO.Name,
+                    Email= userDTO.Email,
+                    Password= userDTO.Password,
+                    RoleName= userDTO.RoleName
+                };
 
                 try
                 {
-                    var factory = new ConnectionFactory() { HostName = "localhost" };
-                    using (var connection = factory.CreateConnection())
-                    using (var channel = connection.CreateModel())
-                    {
-                        channel.QueueDeclare(queue: "user",
-                                             durable: false,
-                                             exclusive: false,
-                                             autoDelete: false,
-                                             arguments: null);
+                    Uri uri = new Uri("rabbitmq://localhost/user");
+                    var endPoint = await _bus.GetSendEndpoint(uri);
+                    var serializedUser = JsonConvert.SerializeObject(userDto);
 
-                        var serializedUser = JsonConvert.SerializeObject(user);
-                        var body = Encoding.UTF8.GetBytes(serializedUser);
+                    await endPoint.Send(userDto);
 
-                        channel.BasicPublish(exchange: "",
-                                             routingKey: "user",
-                                             basicProperties: null,
-                                             body: body);
-                    }
                 }
-                catch (Exception ex)
+                catch (Exception ex) 
                 {
                     return BadRequest(ex);
                 }
+
+
+                //try
+                //{
+                //    var factory = new ConnectionFactory() { HostName = "localhost" };
+                //    using (var connection = factory.CreateConnection())
+                //    using (var channel = connection.CreateModel())
+                //    {
+                //        channel.QueueDeclare(queue: "user",
+                //                             durable: false,
+                //                             exclusive: false,
+                //                             autoDelete: false,
+                //                             arguments: null);
+
+                //        var serializedUser = JsonConvert.SerializeObject(user);
+                //        var body = Encoding.UTF8.GetBytes(serializedUser);
+
+                //        channel.BasicPublish(exchange: "",
+                //                             routingKey: "user",
+                //                             basicProperties: null,
+                //                             body: body);
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return BadRequest(ex);
+                //}
 
 
                 //log in the new user
