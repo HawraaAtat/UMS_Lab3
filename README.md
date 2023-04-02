@@ -2,10 +2,10 @@
 # Microservices
 I have divided my project into the following microservices:
 
-Authentication
-Notification
-Teacher
-Course
+Authentication,
+Notification,
+Teacher,
+Course,
 Each microservice has its own specific database with corresponding tables.
 
 # Architecture
